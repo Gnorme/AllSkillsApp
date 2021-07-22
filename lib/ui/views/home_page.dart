@@ -1,3 +1,7 @@
+import 'package:allskills/ui/views/stats_page.dart';
+import 'package:allskills/ui/widgets/inventory_icon.dart';
+import 'package:allskills/ui/widgets/search_icon.dart';
+import 'package:allskills/ui/widgets/store_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -32,20 +36,31 @@ class _HomePageState extends State<HomePage> {
             appBar: AppBar(
                 backgroundColor: Colors.grey.shade900,
                 toolbarHeight: 80,
-                actions: [WeatherWidget(), StatsIcon(), InboxIcon()],
+                actions: [
+                  WeatherWidget(),
+                  SearchIcon(),
+                  StoreIcon(),
+                  InboxIcon()
+                ],
                 leadingWidth: 180,
-                flexibleSpace: Padding(
-                    padding: EdgeInsets.only(top: 25, left: 5),
-                    child: Row(children: [
-                      Padding(
-                          padding: EdgeInsets.only(
-                              left: 5, top: 5, bottom: 5, right: 10),
-                          child: CircleAvatar(
-                              backgroundImage:
-                                  AssetImage('assets/images/frank.jpg'))),
-                      Text('\$13,000',
-                          style: TextStyle(color: Colors.white), maxLines: 1)
-                    ])),
+                flexibleSpace: InkWell(
+                    onTap: (() {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => StatsPage()));
+                    }),
+                    child: Padding(
+                        padding: EdgeInsets.only(top: 25, left: 5),
+                        child: Row(children: [
+                          Padding(
+                              padding: EdgeInsets.only(
+                                  left: 5, top: 5, bottom: 5, right: 10),
+                              child: CircleAvatar(
+                                  backgroundImage:
+                                      AssetImage('assets/images/frank.jpg'))),
+                          Text('\$13,000',
+                              style: TextStyle(color: Colors.white),
+                              maxLines: 1)
+                        ]))),
                 bottom: TabBar(
                     labelColor: Theme.of(context).accentColor,
                     indicatorColor: Theme.of(context).accentColor,

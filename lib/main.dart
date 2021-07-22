@@ -5,8 +5,13 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:allskills/services/auth.dart';
 import 'package:allskills/ui/views/login_page.dart';
 import 'package:allskills/ui/views/home_page.dart';
+import 'package:flutter/services.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarBrightness: Brightness.light));
   runApp(MyApp());
 }
 

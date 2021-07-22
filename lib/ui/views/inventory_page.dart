@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class InboxPage extends StatefulWidget {
+class InventoryPage extends StatefulWidget {
   @override
-  _InboxPageState createState() => _InboxPageState();
+  _InventoryPageState createState() => _InventoryPageState();
 }
 
-class _InboxPageState extends State<InboxPage> {
+class _InventoryPageState extends State<InventoryPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -73,7 +73,9 @@ class _ProfilePageState extends State<ProfilePage> {
                     bottomOpacity: 1.0,
                     leading: ProfilePicture(imageUrl: ''),
                     leadingWidth: 100,
-                    title: ProfileDetails(userProfile: snapshot.data!),
+                    title: snapshot.data != null
+                        ? ProfileDetails(userProfile: snapshot.data!)
+                        : Text(''),
                     actions: [
                       Container(
                           width: 77,
@@ -425,7 +427,7 @@ class ProfileDetails extends StatelessWidget {
                 style: TextStyle(fontSize: 12)),
             Text(userProfile.numFollowings.toString() + ' Followings',
                 style: TextStyle(fontSize: 12)),
-            Text('\$13,000', style: TextStyle(fontSize: 12))
+            Text('\$0', style: TextStyle(fontSize: 12))
           ]),
           // Padding(
           //     padding: EdgeInsets.only(left: 5),

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class InboxPage extends StatefulWidget {
+class SearchPage extends StatefulWidget {
   @override
-  _InboxPageState createState() => _InboxPageState();
+  _SearchPageState createState() => _SearchPageState();
 }
 
-class _InboxPageState extends State<InboxPage> {
+class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

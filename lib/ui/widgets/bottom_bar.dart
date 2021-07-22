@@ -3,8 +3,12 @@ import 'package:allskills/ui/views/standings_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:allskills/ui/views/home_page.dart';
+import 'package:allskills/ui/views/session_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:camera/camera.dart';
 import 'dart:math' as math;
+
+List<CameraDescription> cameras = [];
 
 class BottomBar extends StatefulWidget {
   BottomBar({Key? key}) : super(key: key);
@@ -18,7 +22,9 @@ class _BottomBarState extends State<BottomBar> {
 
   @override
   void initState() {
+    initCamera();
     super.initState();
+
     isPressed = false;
   }
 
@@ -29,82 +35,90 @@ class _BottomBarState extends State<BottomBar> {
     isPressed = false;
   }
 
+  void initCamera() async {
+    cameras = await availableCameras();
+  }
+
   void refreshBar() {
-    setState(() {
-      isPressed = false;
-    });
+    if (mounted)
+      setState(() {
+        isPressed = false;
+      });
   }
 
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
 
-    return GestureDetector(
-        onTapDown: (details) {
-          setState(() {
-            isPressed = true;
-          });
-        },
-        onTapUp: (details) {
-          setState(() {
-            isPressed = false;
-            print(ModalRoute.of(context));
-          });
-        },
-        child: Container(
-            height: 80,
-            color: Colors.black.withOpacity(0),
-            child: Stack(children: [
-              //BuyTicketButton(() {}),
-              CustomPaint(
-                  size: Size(size.width, 80),
-                  painter: isPressed
-                      ? BBCustomPainter(context, Colors.purple)
-                      : BBCustomPainter(
-                          context, Theme.of(context).accentColor)),
-              Center(
-                  child: Padding(
-                      padding: EdgeInsets.only(top: 10, bottom: 20),
+    return Container(
+        decoration: ShapeDecoration(
+          shape: BottomSheetBorder(size: size),
+          shadows: [
+            BoxShadow(
+              color: Colors.black,
+              spreadRadius: 5,
+              blurRadius: 5,
+              //offset: Offset(0, 5), // changes position of shadow
+            ),
+          ],
+        ),
+        height: 80,
+        //color: Colors.black.withOpacity(0),
+        child: Stack(children: [
+          //BuyTicketButton(() {}),
+          CustomPaint(
+              size: Size(size.width, 80),
+              painter: isPressed
+                  ? BBCustomPainter(context, Colors.purple)
+                  : BBCustomPainter(context, Theme.of(context).accentColor)),
+          Center(
+              child: Padding(
+                  padding: EdgeInsets.only(top: 10, bottom: 20),
+                  child: InkWell(
+                      onTap: (() => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  SessionPage(cameras: cameras)))),
                       child:
-                          Image.asset('assets/images/logo_small_white.png'))),
-              Container(
-                  child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Align(
-                      alignment: Alignment.bottomCenter,
-                      heightFactor: 3,
-                      child: GestureDetector(
-                          onTap: (() => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => ProfilePage(
-                                        user: FirebaseAuth
-                                            .instance.currentUser!)),
-                              ).then((_) => refreshBar())),
-                          child: Text('  PROFILE',
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontFamily: 'Asphaltic',
-                                  fontSize: 24)))),
-                  Container(width: size.width * 0.3),
-                  Align(
-                      alignment: Alignment.bottomRight,
-                      heightFactor: 3,
-                      child: GestureDetector(
-                          onTap: (() => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => StandingsPage()),
-                              )),
-                          child: Text('STANDINGS',
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontFamily: 'Asphaltic',
-                                  fontSize: 24)))),
-                ],
-              )),
-            ])));
+                          Image.asset('assets/images/logo_small_white.png')))),
+          Container(
+              child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Align(
+                  alignment: Alignment.bottomCenter,
+                  heightFactor: 3,
+                  child: GestureDetector(
+                      onTap: (() => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ProfilePage(
+                                    user: FirebaseAuth.instance.currentUser!)),
+                          ).then((_) => refreshBar())),
+                      child: Text('  PROFILE',
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontFamily: 'Asphaltic',
+                              fontSize: 24)))),
+              Container(width: size.width * 0.3),
+              Align(
+                  alignment: Alignment.bottomRight,
+                  heightFactor: 3,
+                  child: GestureDetector(
+                      onTap: (() => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => StandingsPage()),
+                          )),
+                      child: Text('STANDINGS',
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontFamily: 'Asphaltic',
+                              fontSize: 24)))),
+            ],
+          )),
+        ]));
   }
 }
 
@@ -145,4 +159,35 @@ class BBCustomPainter extends CustomPainter {
   bool shouldRepaint(CustomPainter oldDelegate) {
     return true;
   }
+}
+
+class BottomSheetBorder extends ShapeBorder {
+  final Size size;
+  final double height = 80;
+
+  BottomSheetBorder({required this.size});
+
+  @override
+  EdgeInsetsGeometry get dimensions => EdgeInsets.only(bottom: 0);
+
+  @override
+  Path getInnerPath(Rect rect, {TextDirection? textDirection}) => Path();
+
+  @override
+  Path getOuterPath(Rect rect, {TextDirection? textDirection}) {
+    return Path()
+      ..moveTo(10, size.height)
+      ..quadraticBezierTo(30, size.height - height * 0.5, size.width * 0.2,
+          size.height - height * 0.5)
+      ..lineTo(size.width * 0.8, size.height - height * 0.5)
+      ..quadraticBezierTo(size.width - 30, size.height - height * 0.5,
+          size.width - 10, size.height)
+      ..close();
+  }
+
+  @override
+  void paint(Canvas canvas, Rect rect, {TextDirection? textDirection}) {}
+
+  @override
+  ShapeBorder scale(double t) => this;
 }

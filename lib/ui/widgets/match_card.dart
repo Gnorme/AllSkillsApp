@@ -13,9 +13,10 @@ class _MatchCardState extends State<MatchCard> {
   Widget build(BuildContext context) {
     return Card(
         color: Theme.of(context).primaryColor,
-        elevation: 2,
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+        elevation: 10.0,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.0),
+            side: BorderSide(width: 1, color: Colors.black38)),
         child: Stack(alignment: AlignmentDirectional.center, children: [
           Padding(
               padding: EdgeInsets.only(left: 10, right: 10),
@@ -76,7 +77,9 @@ class _MatchSingleCardState extends State<MatchSingleCard> {
         videoPlayerOptions: VideoPlayerOptions(mixWithOthers: false));
 
     _controller.addListener(() {
-      setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     });
     _controller.setLooping(true);
     _controller.initialize();
